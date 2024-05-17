@@ -8,25 +8,25 @@ Download and install Podman Desktop on your operating system. [The instructions 
 
 > **_NOTE:_** For Windows/Mac users, if you can, give the podman machine at least 8GB of memory and 4 CPU (Generative AI Models are resource hungry!). The model will run with less resources, but it will be significantly slower.
 
-Once installed, go ahead and start the application and go through the setup process. After that, you should see an "AI Lab" extension in the left menu. If you don't, you may need to install the extension first. For that, go to Extensions -> Catalog and install Podman AI Lab.
+Once installed, go ahead and start the application and go through the setup process. After that, you should see an "AI Lab" extension in the left menu. If you don't, you may need to install the extension first. If so, go to Extensions -> Catalog and install Podman AI Lab.
 
-![](/assets/podman-desktop-ai.png)
+![Podman Desktop with the Podman AI menu item](/assets/podman-desktop-ai.png)
 
-Go ahead and click on it, and in the AI Lab, select the "Catalog"
+Once you see the menu item, go ahead and click on it, and then in the AI Lab, select the "Catalog"
 
-![](/assets/podman-desktop-ai-catalog.png)
+![Podman AI Lab Catalog](/assets/podman-desktop-ai-catalog.png)
 
-You should now see a list of available AI Models choose from. You can also import different ones (eg. from Huggingface), but we will use one of the InstructLab models that are already available. 
+You should now see a list of available AI Models to choose from. You can also import different ones (eg. from Huggingface), but we will use one of the InstructLab models that are already available.
 
-> **_NOTE:_** If you haven't heard of [Instructlab](https://developers.redhat.com/articles/2024/05/07/instructlab-open-source-generative-ai), it's an open source project for enhancing large language models (LLMs) used in generative artificial intelligence (gen AI) applications. You can even contribute to it yourself!
+> **_NOTE:_** If you haven't heard of [Instructlab](https://developers.redhat.com/articles/2024/05/07/instructlab-open-source-generative-ai), it's a crowd sourced open source project for enhancing large language models (LLMs) used in generative artificial intelligence (gen AI) applications. You can even contribute to it yourself!
 
-To start using the model, we'll first need to download it, so go ahead and do that with the download button ![Download Button](/assets/podman-desktop-model-download.png) next to the instructlab/merlinite-7b-lab-GGUF entry (this might take a little while). 
+To start using the model, we'll first need to download it, so go ahead and do that with the download button ![Download Button](/assets/podman-desktop-model-download.png) next to the instructlab/merlinite-7b-lab-GGUF entry (this might take a little while).
 
 Once downloaded, you can create a new model service by clicking on the rocket button ![rocket button](/assets/podman-desktop-create-model-service.png) that will appear where you previously clicked the download button.
 
-You will be taken to the "Creating Model Service" page where you can set the port that should be exposed for the service. Podman Desktop assigns a random available port by default, but let's set it to `35000` so we can remember more easily what the port is when we configure our Quarkus application. 
+You will be taken to the "Creating Model Service" page where you can set the port that should be exposed for the service. Podman Desktop assigns a random available port by default, but let's set it to `35000` so we can remember more easily what the port is when we configure our Quarkus application.
 
-![](/assets/podman-desktop-create-merlinite-service.png)
+![Create Merlinite Podman AI service](/assets/podman-desktop-create-merlinite-service.png)
 
 After a few moments, your very own Model service will be running locally on your laptop! You an check the details on the Service details page, including some samples to test out the service with cURL (or even Java!).
 
@@ -46,7 +46,7 @@ Go ahead and open the project with your favorite IDE.
 
 ### Connect to the InstructLab Model
 
-Add the following properties in the `application.properties` file available in `src/main/resources`:
+Add the following properties in the `application.properties` file available in `src/main/resources` to point to the model service and to set the correct model name (this is what we selected in Podman AI Lab).
 
 ```properties
 quarkus.langchain4j.openai.base-url=http://localhost:35000/v1 
@@ -88,7 +88,7 @@ The `@SystemMessage` gives the AI Model some context about the scenario.
 
 ### Create the prompt-base resource
 
-Now we'll need to implement a REST resource so we can call the service from the browser or cURL.
+Let's implement a REST resource so we can call the service from the browser or cURL.
 
 Create a new `InstructLabResource.java` Java class in `src/main/java` in the `com.redhat.developers` package with the following contents:
 
@@ -120,7 +120,7 @@ public class InstructLabResource {
 
 ### Invoke the endpoint
 
-We're all set! 
+We're all set!
 
 You can test it out by starting Quarkus in Dev Mode:
 
@@ -130,9 +130,9 @@ You can test it out by starting Quarkus in Dev Mode:
 
 This will start the application (and live-reloads when you make changes to the code, such as changing the prompt message).
 
-Now you can the implementation by pointing your browser to http://localhost:8080/instructlab
+You can the test implementation by pointing your browser to http://localhost:8080/instructlab
 
-You can also run the following command:
+Or if you'd rather test in the CLI, you can the following cURL command:
 
 ```bash
 curl http://localhost:8080/instructlab
