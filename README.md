@@ -1,6 +1,6 @@
 # Working with Quarkus, LangChain4j, Podman AI Lab and InstructLab
 
-This brief tutorial shows you how you can interact with AI models, such as those from the Open Source InstructLab project, using the LangChain4j Quarkus extension.
+This brief tutorial shows you how you can interact with AI models, such as those from the Open Source InstructLab project, using the LangChain4j Quarkus extension. Watch the demo on YouTube: https://youtu.be/Zogg2c1z1P0
 
 ## Installing Podman Desktop AI
 
