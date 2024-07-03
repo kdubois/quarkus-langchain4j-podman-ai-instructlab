@@ -172,6 +172,54 @@ This will allow you to calculate the square root of any given number, positive o
 
 Notice that (at least in our case) the LLM responded with a Java class, since we provided in the SystemMessage that the LLM should respond as if they were a Java engineer.  
 
+## Add Fault Tolerance
+
+You might want to add fault tolerance to your calls to the AI inference server so you can handle failures gracefully in case the model is not reachable or misbehaving. With SmallRye Fault Tolerance (based on the MicroProfile spec) it is fairly trivial to do.
+
+You will need to add the smallrye-fault-tolerance extension to your application, eg.:
+
+```bash
+./mvnw quarkus:add-extension -D"extensions=quarkus-smallrye-fault-tolerance"
+```
+
+Now you can add @FallBack and/or @Retry annotations to your Assistant call like in the following example:
+
+```java
+package org.acme;
+
+import org.eclipse.microprofile.faulttolerance.ExecutionContext;
+import org.eclipse.microprofile.faulttolerance.Fallback;
+import org.eclipse.microprofile.faulttolerance.FallbackHandler;
+import org.eclipse.microprofile.faulttolerance.Retry;
+
+import dev.langchain4j.service.SystemMessage;
+import dev.langchain4j.service.UserMessage;
+import io.quarkiverse.langchain4j.RegisterAiService;
+
+@RegisterAiService()
+public interface AssistantForInstructLab {
+
+    @SystemMessage({
+            "You are a Java developer who likes to over engineer things"
+    })
+    @Retry(maxRetries = 3, delay = 100)
+    @Fallback(AssistantForInstructLabFallback.class)
+    String chat(@UserMessage String userMessage);
+
+    public static class AssistantForInstructLabFallback implements FallbackHandler<String> {
+
+        private static final String EMPTY_RESPONSE = "Failed to get a response from the AI Model. Are you sure it's up and running, and configured correctly?";
+        @Override
+        public String handle(ExecutionContext context) {
+            return EMPTY_RESPONSE;
+        }
+    
+    }
+}
+```
+
+In the above example, we are going to retry up to 3 times to call the inference server with a delay of 100ms between attempts. If after 3 times we still don't have a successful response, the AssistantForInstrctLabFallback class will be called, which will return a simple failure string.
+
 ## Going further
 
 Feel free to play around with the different models Podman Desktop AI Lab provides. You will notice that some are faster than others, and some will respond better to specific questions than others, based on how they have been trained.
