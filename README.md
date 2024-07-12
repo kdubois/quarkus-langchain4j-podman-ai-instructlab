@@ -218,7 +218,7 @@ public interface AssistantForInstructLab {
 }
 ```
 
-In the above example, we are going to retry up to 3 times to call the inference server with a delay of 100ms between attempts. If after 3 times we still don't have a successful response, the AssistantForInstrctLabFallback class will be called, which will return a simple failure string.
+In the above example, we are going to retry up to 3 times to call the inference server with a delay of 100ms between attempts. If after 3 times we still don't have a successful response, the AssistantForInstructLabFallback class will be called, which will return a simple failure string.
 
 ## Going further
 
